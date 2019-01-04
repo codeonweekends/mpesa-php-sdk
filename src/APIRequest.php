@@ -3,7 +3,6 @@
 namespace Codeonweekends\MPesa;
 
 use GuzzleHttp\Client as HttpClient;
-use GuzzleHttp\Exception\RequestException;
 
 class APIRequest
 {
@@ -43,41 +42,32 @@ class APIRequest
 
     private function getRequest()
     {
-        try {
-            $response = $this->http->get($this->context->getUrl(), [
-                'query' => $this->context->getParameters(),
-                'headers' => $this->context->getHeaders()
-            ]);
-            return new APIResponse($response->getStatusCode(), $response->getReasonPhrase(), $response->getHeaders(), $response->getBody()->getContents());
-        } catch (RequestException $e) {
-            die($e->getMessage());
-        }
+        $response = $this->http->get($this->context->getUrl(), [
+            'query' => $this->context->getParameters(),
+            'headers' => $this->context->getHeaders(),
+            'http_errors' => FALSE
+        ]);
+        return new APIResponse($response->getStatusCode(), $response->getReasonPhrase(), $response->getHeaders(), $response->getBody()->getContents());
     }
 
     private function postRequest()
     {
-        try {
-            $response = $this->http->post($this->context->getUrl(), [
-                'form_params' => $this->context->getParameters(),
-                'headers' => $this->context->getHeaders()
-            ]);
-            return new APIResponse($response->getStatusCode(), $response->getReasonPhrase(), $response->getHeaders(), $response->getBody()->getContents());
-        } catch (RequestException $e) {
-            die($e->getMessage());
-        }
+        $response = $this->http->post($this->context->getUrl(), [
+            'json' => $this->context->getParameters(),
+            'headers' => $this->context->getHeaders(),
+            'http_errors' => FALSE
+        ]);
+        return new APIResponse($response->getStatusCode(), $response->getReasonPhrase(), $response->getHeaders(), $response->getBody()->getContents());
     }
 
     private function putRequest()
     {
-        try {
-            $response = $this->http->get($this->context->getUrl(), [
-                'form_params' => $this->context->getParameters(),
-                'headers' => $this->context->getHeaders()
-            ]);
-            return new APIResponse($response->getStatusCode(), $response->getReasonPhrase(), $response->getHeaders(), $response->getBody()->getContents());
-        } catch (RequestException $e) {
-            die($e->getMessage());
-        }
+        $response = $this->http->get($this->context->getUrl(), [
+            'json' => $this->context->getParameters(),
+            'headers' => $this->context->getHeaders(),
+            'http_errors' => FALSE
+        ]);
+        return new APIResponse($response->getStatusCode(), $response->getReasonPhrase(), $response->getHeaders(), $response->getBody()->getContents());
     }
 
     public function defaultHeaders()
