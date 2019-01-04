@@ -1,28 +1,30 @@
 {
-    "name": "codeonweekends/mpesa-php-sdk",
-    "type": "library",
-    "authors": [
-        {
-            "name": "Amandio Nhamande",
-            "email": "amandio16@gmail.com"
-        }
-    ],
-    "require": {
-        "php": ">=7.2",
-        "phpseclib/phpseclib": "^2.0",
-        "guzzlehttp/guzzle": "~6.0"
-    },
-    "autoload": {
-        "classmap": [
-            "src"
-        ]
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Tests\\": "tests/"
-        }
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^7.5"
+  "name": "codeonweekends/mpesa-php-sdk",
+  "description": "(Unofficial) PHP SDK for the MPesa payment gateway by Vodacom Mozambique",
+  "type": "package",
+  "version": "1.0",
+  "authors": [
+    {
+      "name": "Amandio Nhamande",
+      "email": "amandio16@gmail.com"
     }
+  ],
+  "require": {
+    "php": ">=7.2",
+    "phpseclib/phpseclib": "^2.0",
+    "guzzlehttp/guzzle": "~6.0"
+  },
+  "autoload": {
+    "classmap": [
+      "src"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^7.5"
+  }
 }
