@@ -1,6 +1,6 @@
 <?php
 
-namespace MPesa;
+namespace Codeonweekends\MPesa;
 
 use phpseclib\Crypt\RSA as CryptRSA;
 

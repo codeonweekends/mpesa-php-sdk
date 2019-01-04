@@ -1,6 +1,6 @@
 <?php
 
-namespace MPesa;
+namespace Codeonweekends\MPesa;
 
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\RequestException;
