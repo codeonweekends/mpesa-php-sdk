@@ -1,26 +1,39 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Anonymous
- * Date: 04-01-2019
- * Time: 08:20
- */
 
 namespace Codeonweekends\MPesa;
 
+use phpDocumentor\Reflection\Types\Self_;
+
 class MPesa
 {
+    /**
+     * @var APIContext|NULL
+     */
     protected $apiContext;
-    protected $baseUrl;
-    protected $port;
 
-    public function __construct (APIContext $apiContext = NULL, $publicKey = '', $apiKey = '', $address = '', $port = '')
+    protected const BASE_URI = 'api.sandbox.vm.co.mz';
+    protected const C2B_PORT = 18346;
+    protected const C2B_PATH = '/ipg/v1/c2bpayment/';
+    protected const TRANSACTION_STATUS_PORT = 18347;
+    protected const TRANSACTION_STATUS_PATH = '/ipg/v1/queryTxn/';
+    protected const TRANSACTION_REVERSAL_PORT = 18348;
+    protected const TRANSACTION_REVERSAL_PATH = '/ipg/v1/reversal/';
+
+    /**
+     * MPesa constructor.
+     * @param APIContext|NULL $apiContext
+     * @param string $publicKey
+     * @param string $apiKey
+     */
+    public function __construct (APIContext $apiContext = NULL, $publicKey = '', $apiKey = '')
     {
-        $this->baseUrl = !empty($address) ? $address : 'api.sandbox.vm.co.mz';
-        $this->apiContext = $apiContext ? $apiContext : new APIContext($publicKey, $apiKey, TRUE, APIMethodType::GET, $this->baseUrl, $this->port);
+        $this->apiContext = $apiContext ? $apiContext : new APIContext($publicKey, $apiKey, TRUE, APIMethodType::GET, self::BASE_URI);
+        $this->context->addHeader("Origin", "*");
     }
 
     /**
+     * Retrieves a transaction status
+     *
      * @param string $queryReference
      * @param string $serviceProviderCode
      * @param string $securityCredential
@@ -31,9 +44,8 @@ class MPesa
     public function transactionStatus ($queryReference = '', $serviceProviderCode = '', $securityCredential = '', $initiatorIdentifier = '')
     {
         $context = $this->apiContext;
-        $context->setPort('18347');
-        $context->setPath("/ipg/v1/queryTxn/");
-        $context->addHeader("Origin", "*");
+        $context->setPort(self::TRANSACTION_STATUS_PORT);
+        $context->setPath(self::TRANSACTION_STATUS_PATH);
         $context->addParameter('input_QueryReference', $queryReference);
         $context->addParameter('input_ServiceProviderCode', $serviceProviderCode);
         $context->addParameter('input_SecurityCredential',$securityCredential);
@@ -45,28 +57,63 @@ class MPesa
         return json_decode($response->getBody());
     }
 
-    public function c2b ($thirdPartyReference, $amount, $customerMSISDN, $serviceProviderCode, $transactionReference)
+    /**
+     * Do a customer-to-business transaction
+     *
+     * @param string $thirdPartyReference
+     * @param int $amount
+     * @param string $customerMSISDN
+     * @param string $serviceProviderCode
+     * @param string $transactionReference
+     * @return mixed
+     * @throws \Exception
+     */
+    public function c2b ($thirdPartyReference = '', $amount = 10, $customerMSISDN = '', $serviceProviderCode = '', $transactionReference = '')
     {
         $context = $this->apiContext;
-        $context->setPort('18346');
-        $context->setPath("/ipg/v1/c2bpayment/");
+        $context->setPort(self::C2B_PORT);
+        $context->setPath(self::C2B_PATH);
         $context->setMethodType(APIMethodType::POST);
-        $context->addHeader("Origin", "*");
         $context->addParameter('input_ThirdPartyReference', $thirdPartyReference);
         $context->addParameter('input_Amount', $amount);
         $context->addParameter('input_CustomerMSISDN',$customerMSISDN);
         $context->addParameter('input_ServiceProviderCode', $serviceProviderCode);
         $context->addParameter('input_TransactionReference', $transactionReference);
 
-//        return $context;
         $request = new APIRequest($context);
         $response = $request->execute();
 
         return json_decode($response->getBody());
     }
 
-    public function reversal ()
-    {}
+    /**
+     * Reverses a successful transaction
+     *
+     * @param int $amount
+     * @param string $serviceProviderCode
+     * @param string $transactionID
+     * @param string $securityCredential
+     * @param string $initiatorIdentifier
+     * @return mixed
+     * @throws \Exception
+     */
+    public function transactionReverse ($amount = 10, $serviceProviderCode = '', $transactionID = '', $securityCredential = '', $initiatorIdentifier = '')
+    {
+        $context = $this->apiContext;
+        $context->setPort(self::TRANSACTION_REVERSAL_PORT);
+        $context->setPath(self::TRANSACTION_REVERSAL_PATH);
+        $context->setMethodType(APIMethodType::PUT);
+        $context->addParameter('input_Amount', $amount);
+        $context->addParameter('input_ServiceProviderCode', $serviceProviderCode);
+        $context->addParameter('input_TransactionID', $transactionID);
+        $context->addParameter('input_SecurityCredential', $securityCredential);
+        $context->addParameter('input_InitiatorIdentifier', $initiatorIdentifier);
+
+        $request = new APIRequest($context);
+        $response = $request->execute();
+
+        return json_decode($response->getBody());
+    }
 
     /**
      * @return APIContext

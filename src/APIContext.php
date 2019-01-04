@@ -64,8 +64,7 @@ class APIContext
         $decodedPublicKey = base64_decode($this->publicKey);
         $rsa->loadKey($decodedPublicKey);
         $rsa->setEncryptionMode(CryptRSA::ENCRYPTION_PKCS1);
-        // Allow compatibility with openssl
-        // define('CRYPT_RSA_PKCS15_COMPAT', true);
+//        define('CRYPT_RSA_PKCS15_COMPAT', true); // Allow compatibility with openssl
         $cipherText = $rsa->encrypt($this->apiKey);
         $encodedApiKey = base64_encode($cipherText);
 
