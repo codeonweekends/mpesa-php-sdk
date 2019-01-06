@@ -28,7 +28,7 @@ class MPesa
     public function __construct (APIContext $apiContext = NULL, $publicKey = '', $apiKey = '')
     {
         $this->apiContext = $apiContext ? $apiContext : new APIContext($publicKey, $apiKey, TRUE, APIMethodType::GET, self::BASE_URI);
-        $this->context->addHeader("Origin", "*");
+        $this->apiContext->addHeader("Origin", "*");
     }
 
     /**
