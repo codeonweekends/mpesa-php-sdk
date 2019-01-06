@@ -2,8 +2,6 @@
 
 namespace Codeonweekends\MPesa;
 
-use phpDocumentor\Reflection\Types\Self_;
-
 class MPesa
 {
     /**
@@ -97,7 +95,7 @@ class MPesa
      * @return mixed
      * @throws \Exception
      */
-    public function transactionReverse ($amount = 10, $serviceProviderCode = '', $transactionID = '', $securityCredential = '', $initiatorIdentifier = '')
+    public function transactionReversal ($amount = 10, $serviceProviderCode = '', $transactionID = '', $securityCredential = '', $initiatorIdentifier = '')
     {
         $context = $this->apiContext;
         $context->setPort(self::TRANSACTION_REVERSAL_PORT);
