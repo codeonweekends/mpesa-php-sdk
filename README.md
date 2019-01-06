@@ -22,11 +22,11 @@ $context->setApiKey(YOUR_API_KEY);
 ## Create a C2B Transaction
 
 ```php
-$thirdPartyReference = 11114;
+$thirdPartyReference = 'Your third party reference';
 $amount = 10;
-$customerMSISDN = 258843330333;
-$serviceProviderCode = 171717;
-$transactionReference = 'T12344C';
+$customerMSISDN = 258840000000;
+$serviceProviderCode = YOUR_PROVIDER_CODE;
+$transactionReference = 'Transaction Reference';
 
 $c2b = $mpesa->c2b($thirdPartyReference, $amount, $customerMSISDN, $serviceProviderCode, $transactionReference);
 ```
@@ -36,8 +36,8 @@ $c2b = $mpesa->c2b($thirdPartyReference, $amount, $customerMSISDN, $serviceProvi
 ```php
 $queryReference = '5C1400CVRO';
 $serviceProviderCode = '171717';
-$securityCredential = 'Mpesa2019';
-$initiatorIdentifier = 'Mpesa2018';
+$securityCredential = YOUR_SECURITY_CREDENTIAL';
+$initiatorIdentifier = YOUR_INITIATOR_IDENTIFIER';
 
 $status = $mpesa->transactionStatus($queryReference, $serviceProviderCode, $securityCredential, $initiatorIdentifier);
 ```
@@ -46,10 +46,14 @@ $status = $mpesa->transactionStatus($queryReference, $serviceProviderCode, $secu
 
 ```php
 $amount = 10;
-$serviceProviderCode = 171717; 
+$serviceProviderCode = YOUR_PROVIDER_CODE; 
 $transactionID = '49XCDF6';
-$securityCredential = 'Mpesa2019';
-$initiatorIdentifier = 'Mpesa2018';
+$securityCredential = YOUR_SECURITY_CREDENTIAL;
+$initiatorIdentifier = YOUR_INITIATOR_IDENTIFIER';
 
 $reversal = $mpesa->transactionReversal($amount, $serviceProviderCode, $transactionID, $securityCredential, $initiatorIdentifier);
 ```
+# Further Improvements
+
+* Documentation
+* Laravel support
