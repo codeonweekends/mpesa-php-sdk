@@ -2,6 +2,7 @@
   "name": "codeonweekends/mpesa-php-sdk",
   "description": "(Unofficial) PHP SDK for the MPesa payment gateway by Vodacom Mozambique",
   "type": "package",
+  "license": "MIT",
   "authors": [
     {
       "name": "Amandio Nhamande",
