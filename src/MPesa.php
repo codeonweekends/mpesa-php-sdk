@@ -1,8 +1,17 @@
 <?php
+/**
+ * @copyright 2019.
+ * @author Amandio Khuta Nhamande <amandio16@gmail.com>
+ * @license MIT
+ */
 
 namespace Codeonweekends\MPesa;
 
-class MPesa
+/**
+ * Class MPesa
+ * @package Codeonweekends\MPesa
+ */
+class MPesa implements MPesaInterface
 {
     /**
      * @var APIContext|NULL
@@ -30,7 +39,8 @@ class MPesa
     }
 
     /**
-     * Retrieves a transaction status
+     * Retrieves a transaction status.
+     *
      *
      * @param string $queryReference
      * @param string $serviceProviderCode
@@ -56,7 +66,10 @@ class MPesa
     }
 
     /**
-     * Do a customer-to-business transaction
+     * Do a customer-to-business transaction.
+     *
+     * The default amount is set to 10 because the minimum transaction
+     * value for the m-pesa payments is 10.
      *
      * @param string $thirdPartyReference
      * @param int $amount
@@ -86,6 +99,9 @@ class MPesa
 
     /**
      * Reverses a successful transaction
+     *
+     * The default amount is set to 10 because the minimum transaction
+     * value for the m-pesa payments is 10.
      *
      * @param int $amount
      * @param string $serviceProviderCode

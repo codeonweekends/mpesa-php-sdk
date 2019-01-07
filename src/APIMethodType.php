@@ -2,6 +2,10 @@
 
 namespace Codeonweekends\MPesa;
 
+/**
+ * Class APIMethodType
+ * @package Codeonweekends\MPesa
+ */
 class APIMethodType
 {
     const GET = 0;

@@ -1,20 +1,44 @@
 <?php
+/**
+ * @copyright 2019.
+ * @author Amandio Khuta Nhamande <amandio16@gmail.com>
+ * @license MIT
+ */
 
 namespace Codeonweekends\MPesa;
 
 use GuzzleHttp\Client as HttpClient;
 
+/**
+ * Class APIRequest
+ * @package Codeonweekends\MPesa
+ */
 class APIRequest
 {
+    /**
+     * @var APIContext|NULL
+     */
     protected $context;
+
+    /**
+     * @var HttpClient
+     */
     protected $http;
 
+    /**
+     * APIRequest constructor.
+     * @param APIContext|NULL $context
+     */
     public function __construct(APIContext $context = NULL)
     {
         $this->context = $context;
         $this->http = new HttpClient();
     }
 
+    /**
+     * @return APIResponse
+     * @throws \Exception
+     */
     public function execute(): APIResponse
     {
         if ($this->context !== NULL) {
@@ -40,49 +64,73 @@ class APIRequest
         }
     }
 
-    private function getRequest()
+    /**
+     * Executes a GET request
+     *
+     * @return APIResponse
+     */
+    private function getRequest(): APIResponse
     {
         $response = $this->http->get($this->context->getUrl(), [
             'query' => $this->context->getParameters(),
             'headers' => $this->context->getHeaders(),
             'http_errors' => FALSE
         ]);
-        return new APIResponse($response->getStatusCode(), $response->getReasonPhrase(), $response->getHeaders(), $response->getBody()->getContents());
+        return new APIResponse($response);
     }
 
-    private function postRequest()
+    /**
+     * Executes a POST request
+     *
+     * @return APIResponse
+     */
+    private function postRequest(): APIResponse
     {
         $response = $this->http->post($this->context->getUrl(), [
             'json' => $this->context->getParameters(),
             'headers' => $this->context->getHeaders(),
             'http_errors' => FALSE
         ]);
-        return new APIResponse($response->getStatusCode(), $response->getReasonPhrase(), $response->getHeaders(), $response->getBody()->getContents());
+        return new APIResponse($response);
     }
 
-    private function putRequest()
+    /**
+     * Executes a PUT request
+     *
+     * @return APIResponse
+     */
+    private function putRequest(): APIResponse
     {
         $response = $this->http->get($this->context->getUrl(), [
             'json' => $this->context->getParameters(),
             'headers' => $this->context->getHeaders(),
             'http_errors' => FALSE
         ]);
-        return new APIResponse($response->getStatusCode(), $response->getReasonPhrase(), $response->getHeaders(), $response->getBody()->getContents());
+        return new APIResponse($response);
     }
 
-    public function defaultHeaders()
+    /**
+     * Set default request headers for the current context
+     */
+    public function defaultHeaders(): void
     {
         $this->context->addHeader('Authorization', 'Bearer ' . $this->context->getToken());
         $this->context->addHeader('Content-Type', 'application/json');
         $this->context->addHeader('Host', $this->context->getAddress());
     }
 
-    public function setContext(APIContext $context)
+    /**
+     * @param APIContext $context
+     */
+    public function setContext(APIContext $context): void
     {
         $this->context = $context;
     }
 
-    public function getContext(APIContext $context)
+    /**
+     * @return APIContext
+     */
+    public function getContext(): APIContext
     {
         return $this->context;
     }
