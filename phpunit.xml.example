@@ -1,0 +1,35 @@
+<phpunit
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/6.3/phpunit.xsd"
+        backupGlobals="true"
+        backupStaticAttributes="false"
+        bootstrap="./vendor/autoload.php"
+        cacheTokens="false"
+        colors="true"
+        processIsolation="false"
+        stopOnError="false"
+        stopOnFailure="false"
+        stopOnIncomplete="false"
+        stopOnSkipped="false"
+        stopOnRisky="false"
+        timeoutForSmallTests="1"
+        timeoutForMediumTests="10"
+        timeoutForLargeTests="60"
+        verbose="true">
+
+    <testsuites>
+        <testsuite name="MPesa SDK Test Suite">
+            <directory suffix="Test.php">./tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <php>
+        <env name="MPESA_PUBLIC_KEY" value="" />
+        <env name="MPESA_API_KEY" value="" />
+        <env name="MPESA_SERVICE_PROVIDER_CODE" value="" />
+        <env name="MPESA_CUSTOMER_MSISDN" value="" />
+        <env name="MPESA_SECURITY_CREDENTIAL" value="" />
+        <env name="MPESA_INITIATOR_IDENTIFIER" value="" />
+        <env name="MPESA_ADDRESS" value="api.sandbox.vm.co.mz"/>
+    </php>
+</phpunit>
