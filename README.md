@@ -39,8 +39,7 @@ $reversal = $mpesa->transactionReversal($amount, $serviceProviderCode, $transact
 
 # Running Test Suite
 
-1. Copy the file `phpunit.xml.example` and change the name to `phpunit.xml`
-2. Open the file and fill the ``<env/>`` values with appropriate information
+2. Open the file `phpunit.xml` and fill the ``<env/>`` values with appropriate information
 3. Run ```vendor/bin/phpunit```
 
 <b>e.g.</b>
