@@ -17,10 +17,9 @@ class MPesa implements MPesaInterface
      * @var APIContext|NULL
      */
     protected $apiContext;
+    protected $config;
 
     protected const BASE_URI = 'api.sandbox.vm.co.mz';
-    protected const C2B_PORT = 18346;
-    protected const C2B_PATH = '/ipg/v1/c2bpayment/';
     protected const TRANSACTION_STATUS_PORT = 18347;
     protected const TRANSACTION_STATUS_PATH = '/ipg/v1/queryTxn/';
     protected const TRANSACTION_REVERSAL_PORT = 18348;
@@ -28,13 +27,11 @@ class MPesa implements MPesaInterface
 
     /**
      * MPesa constructor.
-     * @param APIContext|NULL $apiContext
-     * @param string $publicKey
-     * @param string $apiKey
      */
-    public function __construct (APIContext $apiContext = NULL, $publicKey = '', $apiKey = '')
+    public function __construct ()
     {
-        $this->apiContext = $apiContext ? $apiContext : new APIContext($publicKey, $apiKey, TRUE, APIMethodType::GET, self::BASE_URI);
+        $this->config = require(__DIR__ . '/config.php');
+        $this->apiContext = new APIContext();
         $this->apiContext->addHeader("Origin", "*");
     }
 
@@ -43,21 +40,19 @@ class MPesa implements MPesaInterface
      *
      *
      * @param string $queryReference
+     * @param string $thirdPartyReference
      * @param string $serviceProviderCode
-     * @param string $securityCredential
-     * @param string $initiatorIdentifier
      * @return mixed
      * @throws \Exception
      */
-    public function transactionStatus ($queryReference = '', $serviceProviderCode = '', $securityCredential = '', $initiatorIdentifier = '')
+    public function transactionStatus ($thirdPartyReference = '', $queryReference = '', $serviceProviderCode = '')
     {
         $context = $this->apiContext;
         $context->setPort(self::TRANSACTION_STATUS_PORT);
         $context->setPath(self::TRANSACTION_STATUS_PATH);
+        $context->addParameter('input_ThirdPartyReference', $thirdPartyReference);
         $context->addParameter('input_QueryReference', $queryReference);
         $context->addParameter('input_ServiceProviderCode', $serviceProviderCode);
-        $context->addParameter('input_SecurityCredential',$securityCredential);
-        $context->addParameter('input_InitiatorIdentifier', $initiatorIdentifier);
 
         $request = new APIRequest($context);
         $response = $request->execute();
@@ -82,8 +77,8 @@ class MPesa implements MPesaInterface
     public function c2b ($thirdPartyReference = '', $amount = 10, $customerMSISDN = '', $serviceProviderCode = '', $transactionReference = '')
     {
         $context = $this->apiContext;
-        $context->setPort(self::C2B_PORT);
-        $context->setPath(self::C2B_PATH);
+        $context->setPort($this->config['ports']['c2b']);
+        $context->setPath($this->config['paths']['c2b']);
         $context->setMethodType(APIMethodType::POST);
         $context->addParameter('input_ThirdPartyReference', $thirdPartyReference);
         $context->addParameter('input_Amount', $amount);

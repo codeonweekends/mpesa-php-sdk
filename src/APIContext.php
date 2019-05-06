@@ -4,6 +4,7 @@ namespace Codeonweekends\MPesa;
 use Codeonweekends\MPesa\Transactions\C2B;
 use Codeonweekends\MPesa\Transactions\Reversal;
 use Codeonweekends\MPesa\Transactions\Status;
+use phpDocumentor\Reflection\Types\Array_;
 use phpseclib\Crypt\RSA as CryptRSA;
 
 /**
@@ -12,6 +13,11 @@ use phpseclib\Crypt\RSA as CryptRSA;
  */
 class APIContext implements APIContextInterface
 {
+    /**
+     * @var array
+     */
+    protected $config;
+
     /**
      * @var string
      */
@@ -66,27 +72,26 @@ class APIContext implements APIContextInterface
     /**
      * APIContext constructor.
      *
-     * @param String|NULL $publicKey
-     * @param String|NULL $apiKey
-     * @param bool $ssl
      * @param int $methodType
-     * @param string $address
      * @param int $port
      * @param string $path
      * @param array $headers
      * @param array $parameters
      */
-    public function __construct($publicKey = '', $apiKey = '', $ssl = TRUE, $methodType = APIMethodType::GET, $address = '', $port = 80, $path = '', $headers = [], $parameters = [])
+    public function __construct($methodType = APIMethodType::GET, $port = 80, $path = '', $headers = [], $parameters = [])
     {
-        $this->publicKey = $publicKey;
-        $this->apiKey = $apiKey;
-        $this->ssl = $ssl;
+        $this->config = require(__DIR__ . '/config.php');
+
         $this->methodType = $methodType;
-        $this->address = $address;
-        $this->port = $port;
-        $this->path = $path;
         $this->headers = $headers;
         $this->parameters = $parameters;
+        $this->port = $port;
+        $this->path = $path;
+
+        $this->address = $this->config['address'];
+        $this->ssl = $this->config['ssl'];
+        $this->publicKey = $this->config['public_key'];
+        $this->apiKey = $this->config['api_key'];
     }
 
     /**
@@ -110,14 +115,13 @@ class APIContext implements APIContextInterface
     {
         if (!empty($this->publicKey) && !empty($this->apiKey))
         {
-            $rsa = new CryptRSA();
-            $decodedPublicKey = base64_decode($this->publicKey);
-            $rsa->loadKey($decodedPublicKey);
-            $rsa->setEncryptionMode(CryptRSA::ENCRYPTION_PKCS1);
-            $cipherText = $rsa->encrypt($this->apiKey);
-            $encodedApiKey = base64_encode($cipherText);
+            $key = "-----BEGIN PUBLIC KEY-----\n";
+            $key .= wordwrap($this->publicKey, 60, "\n", true);
+            $key .= "\n-----END PUBLIC KEY-----";
+            $pk = openssl_get_publickey($key);
+            openssl_public_encrypt($this->apiKey, $token, $pk, OPENSSL_PKCS1_PADDING);
 
-            return $encodedApiKey;
+            return base64_encode($token);
         }
         return '';
     }

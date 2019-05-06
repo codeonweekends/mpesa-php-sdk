@@ -33,12 +33,11 @@ interface MPesaInterface
      *
      *
      * @param string $queryReference
+     * @param string $thirdPartyReference
      * @param string $serviceProviderCode
-     * @param string $securityCredential
-     * @param string $initiatorIdentifier
      * @return mixed
      */
-    public function transactionStatus ($queryReference = '', $serviceProviderCode = '', $securityCredential = '', $initiatorIdentifier = '');
+    public function transactionStatus ($queryReference = '', $thirdPartyReference = '', $serviceProviderCode = '');
 
     /**
      * Reverses a successful transaction
