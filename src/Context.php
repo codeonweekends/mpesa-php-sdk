@@ -4,14 +4,12 @@ namespace Codeonweekends\MPesa;
 use Codeonweekends\MPesa\Transactions\C2B;
 use Codeonweekends\MPesa\Transactions\Reversal;
 use Codeonweekends\MPesa\Transactions\Status;
-use phpDocumentor\Reflection\Types\Array_;
-use phpseclib\Crypt\RSA as CryptRSA;
 
 /**
  * Class APIContext
  * @package Codeonweekends\MPesa
  */
-class APIContext implements APIContextInterface
+class Context
 {
     /**
      * @var array
@@ -21,12 +19,12 @@ class APIContext implements APIContextInterface
     /**
      * @var string
      */
-    protected $publicKey;
+    protected $public_key;
 
     /**
      * @var string
      */
-    protected $apiKey;
+    protected $api_key;
 
     /**
      * @var bool
@@ -36,12 +34,12 @@ class APIContext implements APIContextInterface
     /**
      * @var int
      */
-    protected $methodType;
+    protected $method_type;
 
     /**
-     * @var string
+     * @var string $host
      */
-    protected $address;
+    protected $host;
 
     /**
      * @var int
@@ -69,39 +67,29 @@ class APIContext implements APIContextInterface
      */
     protected $transaction;
 
-    /**
-     * APIContext constructor.
-     *
-     * @param int $methodType
-     * @param int $port
-     * @param string $path
-     * @param array $headers
-     * @param array $parameters
-     */
-    public function __construct($methodType = APIMethodType::GET, $port = 80, $path = '', $headers = [], $parameters = [])
+    public function __construct()
     {
         $this->config = require(__DIR__ . '/config.php');
 
-        $this->methodType = $methodType;
-        $this->headers = $headers;
-        $this->parameters = $parameters;
-        $this->port = $port;
-        $this->path = $path;
-
-        $this->address = $this->config['address'];
+        $this->method_type = MethodType::GET;
+        $this->headers = [];
+        $this->parameters = [];
+        $this->port = 80;
+        $this->path = '';
+        $this->host = $this->config['host'];
         $this->ssl = $this->config['ssl'];
-        $this->publicKey = $this->config['public_key'];
-        $this->apiKey = $this->config['api_key'];
+        $this->public_key = $this->config['public_key'];
+        $this->api_key = $this->config['api_key'];
     }
 
     /**
-     * Creates a well formated URL
+     * Creates a well formatted URL
      *
      * @return string
      */
     public function getUrl(): string
     {
-        $url = $this->address . ':' . $this->port . $this->path;
+        $url = $this->host . ':' . $this->port . $this->path;
         $http = 'http://' . $url;
         $https = 'https://' . $url;
 
@@ -110,20 +98,23 @@ class APIContext implements APIContextInterface
 
     /**
      * Generates a base64 encoded token
+     *
+     * @return string
      */
     public function getToken(): string
     {
-        if (!empty($this->publicKey) && !empty($this->apiKey))
+        if (!empty($this->public_key) && !empty($this->api_key))
         {
             $key = "-----BEGIN PUBLIC KEY-----\n";
-            $key .= wordwrap($this->publicKey, 60, "\n", true);
+            $key .= wordwrap($this->public_key, 60, "\n", true);
             $key .= "\n-----END PUBLIC KEY-----";
-            $pk = openssl_get_publickey($key);
-            openssl_public_encrypt($this->apiKey, $token, $pk, OPENSSL_PKCS1_PADDING);
+            $public_key = openssl_get_publickey($key);
+
+            openssl_public_encrypt($this->api_key, $token, $public_key, OPENSSL_PKCS1_PADDING);
 
             return base64_encode($token);
         }
-        return '';
+        return NULL;
     }
 
     /**
@@ -149,7 +140,7 @@ class APIContext implements APIContextInterface
      */
     public function getPublicKey(): string
     {
-        return $this->publicKey;
+        return $this->public_key;
     }
 
     /**
@@ -157,7 +148,7 @@ class APIContext implements APIContextInterface
      */
     public function setPublicKey($value): void
     {
-        $this->publicKey = $value;
+        $this->public_key = $value;
     }
 
     /**
@@ -165,7 +156,7 @@ class APIContext implements APIContextInterface
      */
     public function getApiKey(): string
     {
-        return $this->apiKey;
+        return $this->api_key;
     }
 
     /**
@@ -173,7 +164,7 @@ class APIContext implements APIContextInterface
      */
     public function setApiKey($value): void
     {
-        $this->apiKey = $value;
+        $this->api_key = $value;
     }
 
     /**
@@ -197,7 +188,7 @@ class APIContext implements APIContextInterface
      */
     public function getMethodType(): int
     {
-        return $this->methodType;
+        return $this->method_type;
     }
 
     /**
@@ -205,23 +196,7 @@ class APIContext implements APIContextInterface
      */
     public function setMethodType($value): void
     {
-        $this->methodType = $value;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAddress(): string
-    {
-        return $this->address;
-    }
-
-    /**
-     * @param $value
-     */
-    public function setAddress($value): void
-    {
-        $this->address = $value;
+        $this->method_type = $value;
     }
 
     /**
@@ -288,5 +263,21 @@ class APIContext implements APIContextInterface
     public function getParameters(): array
     {
         return $this->parameters;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHost(): string
+    {
+        return $this->host;
+    }
+
+    /**
+     * @param string $host
+     */
+    public function setHost($host): void
+    {
+        $this->host = $host;
     }
 }

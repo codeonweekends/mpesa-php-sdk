@@ -7,31 +7,34 @@
 
 namespace Codeonweekends\MPesa;
 
+use Codeonweekends\MPesa\Transactions\C2B;
+use Codeonweekends\MPesa\Transactions\Status;
+
 /**
  * Class MPesa
  * @package Codeonweekends\MPesa
  */
-class MPesa implements MPesaInterface
+class MPesa implements Interfaces\MPesaInterface
 {
     /**
-     * @var APIContext|NULL
+     * @var Context|NULL
      */
     protected $apiContext;
+
+    /**
+     * @var mixed
+     */
     protected $config;
 
-    protected const BASE_URI = 'api.sandbox.vm.co.mz';
     protected const TRANSACTION_STATUS_PORT = 18347;
     protected const TRANSACTION_STATUS_PATH = '/ipg/v1/queryTxn/';
     protected const TRANSACTION_REVERSAL_PORT = 18348;
     protected const TRANSACTION_REVERSAL_PATH = '/ipg/v1/reversal/';
 
-    /**
-     * MPesa constructor.
-     */
     public function __construct ()
     {
         $this->config = require(__DIR__ . '/config.php');
-        $this->apiContext = new APIContext();
+        $this->apiContext = new Context();
         $this->apiContext->addHeader("Origin", "*");
     }
 
@@ -41,23 +44,16 @@ class MPesa implements MPesaInterface
      *
      * @param string $queryReference
      * @param string $thirdPartyReference
-     * @param string $serviceProviderCode
      * @return mixed
      * @throws \Exception
      */
-    public function transactionStatus ($thirdPartyReference = '', $queryReference = '', $serviceProviderCode = '')
+    public function transactionStatus ($thirdPartyReference = '', $queryReference = '')
     {
-        $context = $this->apiContext;
-        $context->setPort(self::TRANSACTION_STATUS_PORT);
-        $context->setPath(self::TRANSACTION_STATUS_PATH);
-        $context->addParameter('input_ThirdPartyReference', $thirdPartyReference);
-        $context->addParameter('input_QueryReference', $queryReference);
-        $context->addParameter('input_ServiceProviderCode', $serviceProviderCode);
+        $status = new Status($thirdPartyReference, $queryReference);
+        $status->setApiContext($this->apiContext);
+        $status->send();
 
-        $request = new APIRequest($context);
-        $response = $request->execute();
-
-        return json_decode($response->getBody());
+        return $status->getResponse();
     }
 
     /**
@@ -74,22 +70,13 @@ class MPesa implements MPesaInterface
      * @return mixed
      * @throws \Exception
      */
-    public function c2b ($thirdPartyReference = '', $amount = 10, $customerMSISDN = '', $serviceProviderCode = '', $transactionReference = '')
+    public function c2b ($transactionReference = '', $amount = 10, $customerMSISDN = '', $thirdPartyReference = '', $serviceProviderCode = '')
     {
-        $context = $this->apiContext;
-        $context->setPort($this->config['ports']['c2b']);
-        $context->setPath($this->config['paths']['c2b']);
-        $context->setMethodType(APIMethodType::POST);
-        $context->addParameter('input_ThirdPartyReference', $thirdPartyReference);
-        $context->addParameter('input_Amount', $amount);
-        $context->addParameter('input_CustomerMSISDN',$customerMSISDN);
-        $context->addParameter('input_ServiceProviderCode', $serviceProviderCode);
-        $context->addParameter('input_TransactionReference', $transactionReference);
+        $c2b = new C2B($transactionReference, $amount, $customerMSISDN, $thirdPartyReference, $serviceProviderCode);
+        $c2b->setApiContext($this->apiContext);
+        $c2b->send();
 
-        $request = new APIRequest($context);
-        $response = $request->execute();
-
-        return json_decode($response->getBody());
+        return $c2b->getResponse();
     }
 
     /**
@@ -111,32 +98,63 @@ class MPesa implements MPesaInterface
         $context = $this->apiContext;
         $context->setPort(self::TRANSACTION_REVERSAL_PORT);
         $context->setPath(self::TRANSACTION_REVERSAL_PATH);
-        $context->setMethodType(APIMethodType::PUT);
+        $context->setMethodType(MethodType::PUT);
         $context->addParameter('input_Amount', $amount);
         $context->addParameter('input_ServiceProviderCode', $serviceProviderCode);
         $context->addParameter('input_TransactionID', $transactionID);
         $context->addParameter('input_SecurityCredential', $securityCredential);
         $context->addParameter('input_InitiatorIdentifier', $initiatorIdentifier);
 
-        $request = new APIRequest($context);
+        $request = new Request($context);
         $response = $request->execute();
 
         return json_decode($response->getBody());
     }
 
     /**
-     * @return APIContext
+     * @return Context
      */
-    public function getApiContext(): APIContext
+    public function getApiContext(): Context
     {
         return $this->apiContext;
     }
 
     /**
-     * @param APIContext $apiContext
+     * @param Context $apiContext
      */
-    public function setApiContext(APIContext $apiContext): void
+    public function setApiContext(Context $apiContext): void
     {
         $this->apiContext = $apiContext;
+    }
+
+    /**
+     *
+     * @param $transactionReference
+     * @param $CustomerMSISDN
+     * @param $amount
+     * @param $thirdPartyReference
+     * @param $serviceProviderCode
+     * @return mixed
+     */
+    public function b2c($transactionReference, $CustomerMSISDN, $amount, $thirdPartyReference, $serviceProviderCode)
+    {
+        // TODO: Implement b2c() method.
+    }
+
+    /**
+     * The B2B API Call is used as a standard business-to-business transaction.
+     * Funds from the business’ mobile money wallet will be deducted and transferred
+     * to the mobile money wallet of the third party business.
+     *
+     * @param $transactionReference
+     * @param $amount
+     * @param $thirdPartyReference
+     * @param $primaryPartyCode
+     * @param $receiverPartyCode
+     * @return mixed
+     */
+    public function b2b($transactionReference, $amount, $thirdPartyReference, $primaryPartyCode, $receiverPartyCode)
+    {
+        // TODO: Implement b2b() method.
     }
 }

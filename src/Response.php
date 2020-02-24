@@ -11,7 +11,7 @@ namespace Codeonweekends\MPesa;
  * Class APIResponse
  * @package Codeonweekends\MPesa
  */
-class APIResponse
+class Response
 {
     /**
      * @var string

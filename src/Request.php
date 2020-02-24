@@ -13,10 +13,10 @@ use GuzzleHttp\Client as HttpClient;
  * Class APIRequest
  * @package Codeonweekends\MPesa
  */
-class APIRequest
+class Request extends MethodType
 {
     /**
-     * @var APIContext|NULL
+     * @var Context|NULL
      */
     protected $context;
 
@@ -27,110 +27,121 @@ class APIRequest
 
     /**
      * APIRequest constructor.
-     * @param APIContext|NULL $context
+     * @param Context|NULL $context
      */
-    public function __construct(APIContext $context = NULL)
+    public function __construct(Context $context = NULL)
     {
         $this->context = $context;
         $this->http = new HttpClient();
     }
 
     /**
-     * @return APIResponse
+     * @return Response
      * @throws \Exception
      */
-    public function execute(): APIResponse
+    public function execute(): Response
     {
-        if ($this->context !== NULL) {
-            $this->defaultHeaders();
+        if ($this->context == NULL) {
+            throw new \Exception('API Context not provided.', '500');
+        }
 
-            switch ($this->context->getMethodType()) {
-                case APIMethodType::GET:
-                    return $this->getRequest();
-                    break;
+        $this->defaultHeaders();
 
-                case APIMethodType::POST:
-                    return $this->postRequest();
-                    break;
+        switch ($this->context->getMethodType()) {
+            case self::GET:
+                return $this->getRequest();
+                break;
 
-                case APIMethodType::PUT:
-                    return $this->putRequest();
-                    break;
+            case self::POST:
+                return $this->postRequest();
+                break;
 
-                default:
-                    throw new \Exception("Unknown Method Type");
-                    break;
-            }
+            case self::PUT:
+                return $this->putRequest();
+                break;
+
+            default:
+                throw new \Exception('Unknown Method Type', '403');
+                break;
         }
     }
 
     /**
      * Executes a GET request
      *
-     * @return APIResponse
+     * @return Response
      */
-    private function getRequest(): APIResponse
+    private function getRequest(): Response
     {
         $response = $this->http->get($this->context->getUrl(), [
             'query' => $this->context->getParameters(),
             'headers' => $this->context->getHeaders(),
             'http_errors' => FALSE
         ]);
-        return new APIResponse($response);
+
+        return new Response($response);
     }
 
     /**
      * Executes a POST request
      *
-     * @return APIResponse
+     * @return Response
      */
-    private function postRequest(): APIResponse
+    private function postRequest(): Response
     {
         $response = $this->http->post($this->context->getUrl(), [
             'json' => $this->context->getParameters(),
             'headers' => $this->context->getHeaders(),
             'http_errors' => FALSE
         ]);
-        return new APIResponse($response);
+
+        return new Response($response);
     }
 
     /**
      * Executes a PUT request
      *
-     * @return APIResponse
+     * @return Response
      */
-    private function putRequest(): APIResponse
+    private function putRequest(): Response
     {
         $response = $this->http->get($this->context->getUrl(), [
             'json' => $this->context->getParameters(),
             'headers' => $this->context->getHeaders(),
             'http_errors' => FALSE
         ]);
-        return new APIResponse($response);
+
+        return new Response($response);
     }
 
     /**
      * Set default request headers for the current context
+     * @throws \Exception
      */
     public function defaultHeaders(): void
     {
+        if ($this->context->getToken() == NULL) {
+            throw new \Exception('API Token not found.', '404');
+        }
+
         $this->context->addHeader('Authorization', 'Bearer ' . $this->context->getToken());
         $this->context->addHeader('Content-Type', 'application/json');
-        $this->context->addHeader('Host', $this->context->getAddress());
+        $this->context->addHeader('Host', $this->context->getHost());
+        $this->context->addHeader("Origin", "*");
     }
 
     /**
-     * @param APIContext $context
+     * @param Context $context
      */
-    public function setContext(APIContext $context): void
+    public function setContext(Context $context): void
     {
         $this->context = $context;
     }
 
     /**
-     * @return APIContext
+     * @return Context
      */
-    public function getContext(): APIContext
+    public function getContext(): Context
     {
         return $this->context;
     }

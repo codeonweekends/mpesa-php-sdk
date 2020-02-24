@@ -6,7 +6,7 @@ namespace Codeonweekends\MPesa;
  * Class APIMethodType
  * @package Codeonweekends\MPesa
  */
-class APIMethodType
+class MethodType
 {
     const GET = 0;
     const POST = 1;
