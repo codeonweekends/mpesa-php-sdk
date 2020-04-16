@@ -36,6 +36,8 @@ class MPesa implements Interfaces\MPesaInterface
         $this->config = require(__DIR__ . '/config.php');
         $this->apiContext = new Context();
         $this->apiContext->addHeader("Origin", "*");
+        $this->apiContext->setApiKey($this->config['api_key']);
+        $this->apiContext->setPublicKey($this->config['public_key']);
     }
 
     /**
@@ -72,6 +74,8 @@ class MPesa implements Interfaces\MPesaInterface
      */
     public function c2b ($transactionReference = '', $amount = 10, $customerMSISDN = '', $thirdPartyReference = '', $serviceProviderCode = '')
     {
+        $serviceProviderCode ??=  $this->config['service_provider_code'];
+
         $c2b = new C2B($transactionReference, $amount, $customerMSISDN, $thirdPartyReference, $serviceProviderCode);
         $c2b->setApiContext($this->apiContext);
         $c2b->send();

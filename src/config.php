@@ -6,11 +6,11 @@
  */
 
 return [
-    'api_key' => env('MPESA_API_KEY', ''),
-    'public_key' => env('MPESA_PUBLIC_KEY', ''),
-    'service_provider_code' => env('MPESA_SERVICE_PROVIDER', 171717),
-    'security_credential' => env('MPESA_SECURITY_CREDENTIAL', 'Mpesa2019'),
-    'initiator_identifier' => env('MPESA_INITIATOR_IDENTIFIER', 'Mpesa2018'),
+    'api_key' => env('MPESA_API_KEY'),
+    'public_key' => env('MPESA_PUBLIC_KEY'),
+    'service_provider_code' => env('MPESA_SERVICE_PROVIDER'),
+    'security_credential' => env('MPESA_SECURITY_CREDENTIAL'),
+    'initiator_identifier' => env('MPESA_INITIATOR_IDENTIFIER'),
     'host' => env('MPESA_HOST', 'api.sandbox.vm.co.mz'),
     'ssl' => env('MPESA_SSL', TRUE),
 

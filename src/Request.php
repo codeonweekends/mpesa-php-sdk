@@ -8,6 +8,7 @@
 namespace Codeonweekends\MPesa;
 
 use GuzzleHttp\Client as HttpClient;
+use GuzzleHttp\Exception\ConnectException;
 
 /**
  * Class APIRequest
@@ -69,49 +70,61 @@ class Request extends MethodType
     /**
      * Executes a GET request
      *
-     * @return Response
+     * @return array|Response
      */
-    private function getRequest(): Response
+    private function getRequest()
     {
-        $response = $this->http->get($this->context->getUrl(), [
-            'query' => $this->context->getParameters(),
-            'headers' => $this->context->getHeaders(),
-            'http_errors' => FALSE
-        ]);
+        try {
+            $response = $this->http->get($this->context->getUrl(), [
+                'query' => $this->context->getParameters(),
+                'headers' => $this->context->getHeaders(),
+                'http_errors' => FALSE
+            ]);
 
-        return new Response($response);
+            return new Response($response);
+        } catch (ConnectException $e) {
+            return $this->connectException($e);
+        }
     }
 
     /**
      * Executes a POST request
      *
-     * @return Response
+     * @return array|Response
      */
-    private function postRequest(): Response
+    private function postRequest()
     {
-        $response = $this->http->post($this->context->getUrl(), [
-            'json' => $this->context->getParameters(),
-            'headers' => $this->context->getHeaders(),
-            'http_errors' => FALSE
-        ]);
+        try {
+            $response = $this->http->post($this->context->getUrl(), [
+                'json' => $this->context->getParameters(),
+                'headers' => $this->context->getHeaders(),
+                'http_errors' => FALSE
+            ]);
 
-        return new Response($response);
+            return new Response($response);
+        } catch (ConnectException $e) {
+            return $this->connectException($e);
+        }
     }
 
     /**
      * Executes a PUT request
      *
-     * @return Response
+     * @return array|Response
      */
-    private function putRequest(): Response
+    private function putRequest()
     {
-        $response = $this->http->get($this->context->getUrl(), [
-            'json' => $this->context->getParameters(),
-            'headers' => $this->context->getHeaders(),
-            'http_errors' => FALSE
-        ]);
+        try {
+            $response = $this->http->get($this->context->getUrl(), [
+                'json' => $this->context->getParameters(),
+                'headers' => $this->context->getHeaders(),
+                'http_errors' => FALSE
+            ]);
 
-        return new Response($response);
+            return new Response($response);
+        } catch (ConnectException $e) {
+            return $this->connectException($e);
+        }
     }
 
     /**
@@ -144,5 +157,17 @@ class Request extends MethodType
     public function getContext(): Context
     {
         return $this->context;
+    }
+
+    /**
+     * @param ConnectException $e
+     * @return array
+     */
+    private function connectException(ConnectException $e) : array
+    {
+        return [
+            'code' => $e->getCode(),
+            'message' => 'Erro de conecção. Certifique-se que está conectado a internet e tente novamente.'
+        ];
     }
 }
