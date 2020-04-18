@@ -35,7 +35,7 @@ class Response
 
     /**
      * APIResponse constructor.
-     * @param null $response
+     * @param $response
      */
     public function __construct($response = NULL)
     {
@@ -43,10 +43,8 @@ class Response
         {
             $this->statusCode = $response->getStatusCode();
             $this->headers = $response->getHeaders();
-            $this->body = $response->getBody()->getContents();
+            $this->body = json_decode($response->getBody()->getContents());
             $this->reasonPhrase = $response->getReasonPhrase();
-
-            $this->parse();
         }
     }
 
@@ -55,7 +53,6 @@ class Response
      */
     private function parse (): void
     {
-        // TODO Parse the response body
     }
 
     /**
