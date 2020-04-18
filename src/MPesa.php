@@ -28,7 +28,7 @@ class MPesa implements Interfaces\MPesaInterface
 
     public function __construct ()
     {
-        $this->config = require(__DIR__ . '/config.php');
+        $this->config = require_once(__DIR__ . '/config.php');
         $this->apiContext = new Context();
         $this->apiContext->addHeader("Origin", "*");
         $this->apiContext->setApiKey($this->config['api_key']);
