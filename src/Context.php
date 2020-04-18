@@ -115,7 +115,7 @@ class Context
 
             return base64_encode($token);
         }
-        return NULL;
+        return '';
     }
 
     /**
