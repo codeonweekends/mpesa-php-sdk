@@ -2,8 +2,8 @@
 
 namespace CodeonWeekends\MPesa;
 
-use Codeonweekends\MPesa\Transactions\C2B;
-use Codeonweekends\MPesa\Transactions\Status;
+use CodeonWeekends\MPesa\Transactions\C2B;
+use CodeonWeekends\MPesa\Transactions\Status;
 
 /**
  * Class MPesa
@@ -28,7 +28,7 @@ class MPesa implements Interfaces\MPesaInterface
 
     public function __construct ()
     {
-        $this->config = require_once(__DIR__ . '/config.php');
+        $this->config = require(__DIR__ . '/config.php');
         $this->apiContext = new Context();
         $this->apiContext->addHeader("Origin", "*");
         $this->apiContext->setApiKey($this->config['api_key']);
@@ -67,9 +67,9 @@ class MPesa implements Interfaces\MPesaInterface
      * @return mixed
      * @throws \Exception
      */
-    public function c2b ($transactionReference = '', $amount = 10, $customerMSISDN = '', $thirdPartyReference = '', $serviceProviderCode = '')
+    public function c2b ($transactionReference = '', $amount = 10, $customerMSISDN = '', $thirdPartyReference = '', $serviceProviderCode = null)
     {
-        $serviceProviderCode ??=  $this->config['service_provider_code'];
+        $serviceProviderCode ??= $this->config['service_provider_code'];
 
         $c2b = new C2B($transactionReference, $amount, $customerMSISDN, $thirdPartyReference, $serviceProviderCode);
         $c2b->setApiContext($this->apiContext);
@@ -107,7 +107,7 @@ class MPesa implements Interfaces\MPesaInterface
         $request = new Request($context);
         $response = $request->execute();
 
-        return json_decode($response->getBody());
+        return $response->getBody();
     }
 
     /**
