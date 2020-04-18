@@ -5,7 +5,7 @@
  * @license MIT
  */
 
-namespace Codeonweekends\MPesa\Transactions;
+namespace CodeonWeekends\MPesa\Transactions;
 
 use Codeonweekends\MPesa\Context;
 use Codeonweekends\MPesa\Interfaces\TransactionsInterface;

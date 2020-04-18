@@ -5,7 +5,7 @@
  * @license MIT
  */
 
-namespace Codeonweekends\MPesa;
+namespace CodeonWeekends\MPesa;
 
 /**
  * Class APIResponse

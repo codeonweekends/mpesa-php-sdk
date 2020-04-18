@@ -5,7 +5,7 @@
  * @license MIT
  */
 
-namespace Codeonweekends\MPesa\Transactions;
+namespace CodeonWeekends\MPesa\Transactions;
 
 
 class B2B implements TransactionsInterface

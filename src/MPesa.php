@@ -1,11 +1,6 @@
 <?php
-/**
- * @copyright 2019.
- * @author Amandio Khuta Nhamande <amandio16@gmail.com>
- * @license MIT
- */
 
-namespace Codeonweekends\MPesa;
+namespace CodeonWeekends\MPesa;
 
 use Codeonweekends\MPesa\Transactions\C2B;
 use Codeonweekends\MPesa\Transactions\Status;

@@ -2,5 +2,4 @@
 /vendor
 .env
 index.php
-composer.lock
 phpunit.xml

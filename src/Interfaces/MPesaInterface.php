@@ -6,7 +6,7 @@
  *
  */
 
-namespace Codeonweekends\MPesa\Interfaces;
+namespace CodeonWeekends\MPesa\Interfaces;
 
 /**
  * Interface MPesaInterface

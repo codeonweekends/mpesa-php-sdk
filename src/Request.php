@@ -5,7 +5,7 @@
  * @license MIT
  */
 
-namespace Codeonweekends\MPesa;
+namespace CodeonWeekends\MPesa;
 
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\ConnectException;

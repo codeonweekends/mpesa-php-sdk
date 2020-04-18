@@ -1,5 +1,6 @@
 <?php
-namespace Codeonweekends\MPesa;
+
+namespace CodeonWeekends\MPesa;
 
 use Codeonweekends\MPesa\Transactions\C2B;
 use Codeonweekends\MPesa\Transactions\Reversal;

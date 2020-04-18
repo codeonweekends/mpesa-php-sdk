@@ -1,6 +1,6 @@
 <?php
 
-namespace Codeonweekends\MPesa;
+namespace CodeonWeekends\MPesa;
 
 /**
  * Class APIMethodType
