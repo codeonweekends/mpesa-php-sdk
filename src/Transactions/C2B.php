@@ -7,11 +7,11 @@
 
 namespace CodeonWeekends\MPesa\Transactions;
 
-use Codeonweekends\MPesa\Context;
-use Codeonweekends\MPesa\MethodType;
-use Codeonweekends\MPesa\Request;
-use Codeonweekends\MPesa\Interfaces\TransactionsInterface;
-use Codeonweekends\MPesa\Response;
+use CodeonWeekends\MPesa\Context;
+use CodeonWeekends\MPesa\MethodType;
+use CodeonWeekends\MPesa\Request;
+use CodeonWeekends\MPesa\Interfaces\TransactionsInterface;
+use CodeonWeekends\MPesa\Response;
 
 class C2B implements TransactionsInterface
 {
@@ -65,7 +65,7 @@ class C2B implements TransactionsInterface
      */
     public function __construct($transactionReference, $amount, $customerMSISDN, $thirdPartyReference, $serviceProviderCode)
     {
-        $this->config = require_once(__DIR__ . '/../config.php');
+        $this->config = require(__DIR__ . '/../config.php');
         $this->transactionReference = $transactionReference;
         $this->customerMSISDN = $customerMSISDN;
         $this->amount = $amount;
@@ -184,7 +184,7 @@ class C2B implements TransactionsInterface
     }
 
     /**
-     * @param Response $response
+     * @param $response
      */
     public function setResponse($response): void
     {
