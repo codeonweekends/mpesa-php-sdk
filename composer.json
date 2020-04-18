@@ -15,7 +15,8 @@
     "guzzlehttp/guzzle": "~6.0",
     "illuminate/support": "*",
     "ext-json": "*",
-    "ext-openssl": "*"
+    "ext-openssl": "*",
+    "vlucas/phpdotenv": "^4.1"
   },
   "autoload": {
     "psr-4": {
